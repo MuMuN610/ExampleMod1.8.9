@@ -1,8 +1,10 @@
 package com.example.examplemod;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraftforge.client.event.RenderEntityEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -17,12 +19,14 @@ public class FlatItemsMod {
     }
 
     @SubscribeEvent
-    public void onRenderEntityPre(RenderEntityEvent.Pre event) {
-        if (event.entity instanceof EntityItem) {
-            RenderManager rm = event.renderer;
-            if (rm != null) {
-                rm.playerViewX = 0.0F;
-            }
+    public void onRenderWorldLast(RenderWorldLastEvent event) {
+        Minecraft mc = Minecraft.getMinecraft();
+        if (mc.theWorld == null) return;
+
+        RenderManager rm = mc.getRenderManager();
+        if (rm != null) {
+            // 上下視点（X軸回転）の追跡角度を0に固定し、1.7.10風の水平のみのビルボードにする
+            rm.playerViewX = 0.0F;
         }
     }
 }
